@@ -36,7 +36,7 @@
   <title>Document</title>
 </head>
 <body>
-  <form onsubmit="storeToLocalStorage(event)">
+  <form id="myForm" onsubmit="storeToLocalStorage(event)">
     <fieldset>
     <label>Name</label><br>
     <input type="text" name="username" required><br><br>
@@ -48,15 +48,27 @@
     </fieldset>
   </form>
   <script>
+
     function storeToLocalStorage(event){
-      event.preventDefault();
-      const name = event.target.username.value;
-      const email = event.target.email.value;
-      const password = event.target.password.value;
-      localStorage.setItem('name', name);
-      localStorage.setItem('password', password);
-      localStorage.setItem('email', email);
+       event.preventDefault();
+       const name = event.target.username.value;
+       const password = event.target.password.value;
+       const email = event.target.email.value;
+       //localStorage.setItem('name', name);
+       //localStorage.setItem('password', password);
+       //localStorage.setItem('email', email);
+       const myForm = {
+        name,
+        email,
+        password
+       };
+       let myForm_serialized = JSON.stringify(myForm);
+       localStorage.setItem('myForm',myForm_serialized);
+       let myForm_deserialized = JSON.parse(myForm_serialized);
+       console.log(myForm_deserialized);
     };
+
+    
 
   </script>
   
