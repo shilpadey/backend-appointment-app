@@ -47,6 +47,7 @@
     <button>Submit</button>
     </fieldset>
   </form>
+  <ul id="listOfUsers"></ul>
   <script>
 
     function storeToLocalStorage(event){
@@ -62,10 +63,15 @@
         email,
         password
        };
-       let myForm_serialized = JSON.stringify(myForm);
-       localStorage.setItem('myForm',myForm_serialized);
-       let myForm_deserialized = JSON.parse(myForm_serialized);
-       console.log(myForm_deserialized);
+       localStorage.setItem(myForm.email, JSON.stringify(myForm));
+       showNewUsers(myForm);
+    };
+
+    function showNewUsers(user) {
+         const parentNode = document.getElementById('listOfUsers');
+         const childHTML =  `<li> ${user.name} - ${user.email} </li>`;
+
+         parentNode.innerHTML = parentNode.innerHTML+childHTML;
     };
 
     
