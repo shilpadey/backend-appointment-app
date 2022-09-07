@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    fieldset {
+      background-color: aqua;
+    }
+    form {
+      text-align: center;
+      width: 1020px;
+      height: 300px;
+      border-left: 15px black;
+      border-right: 15px black;
+      padding: 10px;
+      margin: 50px auto
+    }
+    input {
+      font-size: 25px;
+      width: 1000px;
+      margin: 2px;
+    }
+    .button {
+      background-color: orange;
+      width: 1000px;
+      font-size: 25px;
+    }
+    label {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 20px;
+      text-align-last: left;
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <form id="myForm" onsubmit="storeToLocalStorage(event)">
+    <fieldset>
+    <label>Name</label><br>
+    <input id="username" type="text" name="username" required><br><br>
+    <label>Email</label><br>
+     <input id="emailId" type="email" name="email" required><br><br>
+    <label>Password</label><br>
+     <input id="password" type="password" name="password" required><br><br>
+    <button class="button button1">Submit</button>
+    </fieldset>
+  </form>
+  <ul id="listOfUsers"></ul>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+  <script>
+
+    function storeToLocalStorage(event){
+       event.preventDefault();
+       const name = event.target.username.value;
+       const password = event.target.password.value;
+       const email = event.target.email.value;
+       //localStorage.setItem('name', name);
+       //localStorage.setItem('password', password);
+       //localStorage.setItem('email', email);
+       const myForm = {
+        name,
+        email,
+        password
+       };
+       //localStorage.setItem(myForm.email, JSON.stringify(myForm));
+
+       axios
+       .post('https://crudcrud.com/api/1949d8d4c08e4e3ab46f1228cdeab6d9/registrationData',myForm)
+       .then((response) => {
+        showNewUsers(response.data)
+        console.log(response)
+       })
+       .catch((err) => console.log(err))
+       
+    };
+
+    window.addEventListener(('DOMContentLoaded'),() =>{
+      
+      axios
+       .post('https://crudcrud.com/api/1949d8d4c08e4e3ab46f1228cdeab6d9/registrationData',myForm)
+       .then((response) => {
+          console.log(response);
+
+        for(var i = 0; i < response.data.length; i++){
+          showNewUsers(response.data[i]);
+        }
+       })
+       .catch((err) => console.log(err))
+    })
+     
+    
+     function showNewUsers(user) {
+      document.getElementById('emailId').value = '';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+
+      if(localStorage.getItem(user.email) !== null){
+        removeUserFromTheScreen(user.email);
+      }
+         const parentNode = document.getElementById('listOfUsers');
+         const childHTML =  `<li id = ${user.email}> ${user.name} - ${user.email} 
+                            <button onclick = deleteUser('${user.email}')>Delete</button> 
+                            <button onclick = editUserDetails('${user.email}','${user.name}')>Edit</button>
+                            </li>`;
+
+         parentNode.innerHTML = parentNode.innerHTML+childHTML;
+        
+     };
+
+     function editUserDetails(email,name){
+      document.getElementById('emailId').value = email;
+      document.getElementById('username').value = name;
+
+      deleteUser(email);
+     }
+
+     function deleteUser(email) {
+        console.log(email);
+        localStorage.removeItem(email);
+        removeUserFromTheScreen(email);
+     };
+
+     function removeUserFromTheScreen(email){
+      const parentNode = document.getElementById('listOfUsers');
+      const childNodetoBeDeleted = document.getElementById(email);
+       if(childNodetoBeDeleted){
+         parentNode.removeChild(childNodetoBeDeleted);
+       }
+      }
+    
+    
+    
+
+  </script>
+  
+</body>
+</html>
